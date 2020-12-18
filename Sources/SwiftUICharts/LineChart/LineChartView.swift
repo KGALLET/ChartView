@@ -19,7 +19,8 @@ public struct LineChartView: View {
     
     public var formSize:CGSize
     public var dropShadow: Bool
-    public var valueSpecifier:String
+    public var valueSpecifier: String
+    public var currentValueType: String
     
     @State private var touchLocation:CGPoint = .zero
     @State private var showIndicatorDot: Bool = false
@@ -42,8 +43,8 @@ public struct LineChartView: View {
                 rateValue: Int? = 14,
                 cornerImage:Image? = Image(systemName: "waveform.path.ecg"),
                 dropShadow: Bool? = true,
-                valueSpecifier: String? = "%.1f") {
-        
+                valueSpecifier: String? = "%.1f",
+                currentValueType: String? = nil) {
         self.data = ChartData(points: data)
         self.title = title
         self.legend = legend
@@ -55,6 +56,7 @@ public struct LineChartView: View {
         self.dropShadow = dropShadow!
         self.valueSpecifier = valueSpecifier!
         self.rateValue = rateValue
+        self.currentValueType = currentValueType!
     }
     
     public var body: some View {
@@ -103,6 +105,9 @@ public struct LineChartView: View {
                         Text("\(self.currentValue, specifier: self.valueSpecifier)")
                             .font(.system(size: 41, weight: .bold, design: .default))
                             .offset(x: 0, y: 30)
+                        Text("\(self.currentValueType)")
+                            .font(.system(size: 41, weight: .bold, design: .default))
+                            .offset(x: 0, y: 35)
                         Spacer()
                     }
                     .transition(.scale)

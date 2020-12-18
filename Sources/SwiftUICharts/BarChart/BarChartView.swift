@@ -20,6 +20,7 @@ public struct BarChartView : View {
     public var cornerImage: Image
     public var valueSpecifier:String
     public var keepTouchLocation: Bool
+    public var currentValueType: String
     
     @State private var touchLocation: CGFloat = -1.0
     @State private var showValue: Bool = false
@@ -34,7 +35,7 @@ public struct BarChartView : View {
     var isFullWidth:Bool {
         return self.formSize == ChartForm.large
     }
-    public init(data:ChartData, title: String, legend: String? = nil, style: ChartStyle = Styles.barChartStyleOrangeLight, form: CGSize? = ChartForm.medium, dropShadow: Bool? = true, cornerImage:Image? = Image(systemName: "waveform.path.ecg"), valueSpecifier: String? = "%.1f", keepTouchLocation: Bool = false){
+    public init(data:ChartData, title: String, legend: String? = nil, style: ChartStyle = Styles.barChartStyleOrangeLight, form: CGSize? = ChartForm.medium, dropShadow: Bool? = true, cornerImage:Image? = Image(systemName: "waveform.path.ecg"), valueSpecifier: String? = "%.1f", keepTouchLocation: Bool = false, currentValueType: String? = nil){
         self.data = data
         self.title = title
         self.legend = legend
@@ -45,6 +46,7 @@ public struct BarChartView : View {
         self.cornerImage = cornerImage!
         self.valueSpecifier = valueSpecifier!
         self.keepTouchLocation = keepTouchLocation
+        self.currentValueType = currentValueType!
     }
     
     public var body: some View {
@@ -60,9 +62,14 @@ public struct BarChartView : View {
                             .font(.headline)
                             .foregroundColor(self.colorScheme == .dark ? self.darkModeStyle.textColor : self.style.textColor)
                     }else{
-                        Text("\(self.currentValue, specifier: self.valueSpecifier)")
-                            .font(.headline)
-                            .foregroundColor(self.colorScheme == .dark ? self.darkModeStyle.textColor : self.style.textColor)
+                        HStack {
+                            Text("\(self.currentValue, specifier: self.valueSpecifier)")
+                                .font(.headline)
+                                .foregroundColor(self.colorScheme == .dark ? self.darkModeStyle.textColor : self.style.textColor)
+                            Text("\(self.currentValueType)")
+                                .font(.headline)
+                                .foregroundColor(self.colorScheme == .dark ? self.darkModeStyle.textColor : self.style.textColor)
+                        }
                     }
                     if(self.formSize == ChartForm.large && self.legend != nil && !showValue) {
                         Text(self.legend!)
