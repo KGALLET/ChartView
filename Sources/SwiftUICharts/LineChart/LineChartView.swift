@@ -15,6 +15,7 @@ public struct LineChartView: View {
     public var legend: String?
     public var style: ChartStyle
     public var darkModeStyle: ChartStyle
+    public var cornerImage: Image
     
     public var formSize:CGSize
     public var dropShadow: Bool
@@ -39,6 +40,7 @@ public struct LineChartView: View {
                 style: ChartStyle = Styles.lineChartStyleOne,
                 form: CGSize? = ChartForm.medium,
                 rateValue: Int? = 14,
+                cornerImage:Image? = Image(systemName: "waveform.path.ecg"),
                 dropShadow: Bool? = true,
                 valueSpecifier: String? = "%.1f") {
         
@@ -49,6 +51,7 @@ public struct LineChartView: View {
         self.darkModeStyle = style.darkModeStyle != nil ? style.darkModeStyle! : Styles.lineViewDarkMode
         self.formSize = form!
         frame = CGSize(width: self.formSize.width, height: self.formSize.height/2)
+        self.cornerImage = cornerImage!
         self.dropShadow = dropShadow!
         self.valueSpecifier = valueSpecifier!
         self.rateValue = rateValue
@@ -63,10 +66,16 @@ public struct LineChartView: View {
             VStack(alignment: .leading){
                 if(!self.showIndicatorDot){
                     VStack(alignment: .leading, spacing: 8){
-                        Text(self.title)
-                            .font(.title)
-                            .bold()
-                            .foregroundColor(self.colorScheme == .dark ? self.darkModeStyle.textColor : self.style.textColor)
+                        HStack {
+                            Text(self.title)
+                                .font(.headline)
+                                .foregroundColor(self.colorScheme == .dark ? self.darkModeStyle.textColor : self.style.textColor)
+                            Spacer()
+                            self.cornerImage
+                                .imageScale(.large)
+                                .foregroundColor(self.colorScheme == .dark ? self.darkModeStyle.legendTextColor : self.style.legendTextColor)
+                                .padding(.horizontal)
+                        }
                         if (self.legend != nil){
                             Text(self.legend!)
                                 .font(.callout)
