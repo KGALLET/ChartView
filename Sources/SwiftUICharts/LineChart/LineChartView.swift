@@ -107,7 +107,7 @@ public struct LineChartView: View {
                             .offset(x: 0, y: 30)
                         Text("\(self.currentValueType)")
                             .font(.system(size: 41, weight: .bold, design: .default))
-                            .offset(x: 0, y: 35)
+                            .offset(x: 0, y: 30)
                         Spacer()
                     }
                     .transition(.scale)

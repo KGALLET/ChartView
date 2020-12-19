@@ -62,7 +62,7 @@ public struct BarChartView : View {
                             .font(.headline)
                             .foregroundColor(self.colorScheme == .dark ? self.darkModeStyle.textColor : self.style.textColor)
                     }else{
-                        HStack {
+                        HStack(spacing: 2){
                             Text("\(self.currentValue, specifier: self.valueSpecifier)")
                                 .font(.headline)
                                 .foregroundColor(self.colorScheme == .dark ? self.darkModeStyle.textColor : self.style.textColor)
