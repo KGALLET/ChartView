@@ -12,6 +12,7 @@ public struct LineView: View {
     @ObservedObject var data: ChartData
     public var xAxisData: [CustomStringConvertible]?
     public var title: String?
+    public var menuOptions: AnyView?
     public var legend: String?
     public var style: ChartStyle
     public var darkModeStyle: ChartStyle
@@ -30,13 +31,15 @@ public struct LineView: View {
     public init(data: [Double],
                 xAxisData: [CustomStringConvertible]? = nil,
                 title: String? = nil,
+                menuOptions: AnyView? = nil,
                 legend: String? = nil,
                 style: ChartStyle = Styles.lineChartStyleOne,
                 valueSpecifier: String? = "%.1f") {
-        
+    
         self.data = ChartData(points: data)
         self.xAxisData = xAxisData
         self.title = title
+        self.menuOptions = menuOptions
         self.legend = legend
         self.style = style
         self.valueSpecifier = valueSpecifier!
@@ -48,9 +51,19 @@ public struct LineView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Group{
                     if (self.title != nil){
-                        Text(self.title!)
-                            .font(.title)
-                            .bold().foregroundColor(self.colorScheme == .dark ? self.darkModeStyle.textColor : self.style.textColor)
+                        if (self.menuOptions != nil) {
+                            HStack {
+                                Text(self.title!)
+                                    .font(.title)
+                                    .bold().foregroundColor(self.colorScheme == .dark ? self.darkModeStyle.textColor : self.style.textColor)
+                                Spacer()
+                                self.menuOptions!
+                            }
+                        } else {
+                            Text(self.title!)
+                                .font(.title)
+                                .bold().foregroundColor(self.colorScheme == .dark ? self.darkModeStyle.textColor : self.style.textColor)
+                        }
                     }
                     if (self.legend != nil){
                         Text(self.legend!)
