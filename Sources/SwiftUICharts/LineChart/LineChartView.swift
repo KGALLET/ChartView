@@ -22,6 +22,7 @@ public struct LineChartView: View {
     public var valueSpecifier: String
     public var currentValueType: String
     
+    @Binding private var isScrolling: Bool
     @State private var touchLocation:CGPoint = .zero
     @State private var showIndicatorDot: Bool = false
     @State private var currentValue: Double = 2 {
@@ -44,7 +45,8 @@ public struct LineChartView: View {
                 cornerImage:Image? = Image(systemName: "waveform.path.ecg"),
                 dropShadow: Bool? = true,
                 valueSpecifier: String? = "%.1f",
-                currentValueType: String? = nil) {
+                currentValueType: String? = nil,
+                isScrolling: Binding<Bool>) {
         self.data = ChartData(points: data)
         self.title = title
         self.legend = legend
@@ -57,6 +59,7 @@ public struct LineChartView: View {
         self.valueSpecifier = valueSpecifier!
         self.rateValue = rateValue
         self.currentValueType = currentValueType!
+        self._isScrolling = isScrolling
     }
     
     public var body: some View {
@@ -129,13 +132,15 @@ public struct LineChartView: View {
         }
         .gesture(DragGesture()
         .onChanged({ value in
+            self.isScrolling = true
             self.touchLocation = value.location
             self.showIndicatorDot = true
             self.getClosestDataPoint(toPoint: value.location, width:self.frame.width, height: self.frame.height)
         })
-            .onEnded({ value in
-                self.showIndicatorDot = false
-            })
+        .onEnded({ value in
+            self.showIndicatorDot = false
+            self.isScrolling = false
+        })
         )
     }
     
@@ -156,10 +161,10 @@ public struct LineChartView: View {
 struct WidgetView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            LineChartView(data: [8,23,54,32,12,37,7,23,43], title: "Line chart", legend: "Basic")
+            LineChartView(data: [8,23,54,32,12,37,7,23,43], title: "Line chart", legend: "Basic", isScrolling: .constant(true))
                 .environment(\.colorScheme, .light)
             
-            LineChartView(data: [282.502, 284.495, 283.51, 285.019, 285.197, 286.118, 288.737, 288.455, 289.391, 287.691, 285.878, 286.46, 286.252, 284.652, 284.129, 284.188], title: "Line chart", legend: "Basic")
+            LineChartView(data: [282.502, 284.495, 283.51, 285.019, 285.197, 286.118, 288.737, 288.455, 289.391, 287.691, 285.878, 286.46, 286.252, 284.652, 284.129, 284.188], title: "Line chart", legend: "Basic", isScrolling: .constant(true))
             .environment(\.colorScheme, .light)
         }
     }

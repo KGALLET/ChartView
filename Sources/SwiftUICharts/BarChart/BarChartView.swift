@@ -22,6 +22,7 @@ public struct BarChartView : View {
     public var keepTouchLocation: Bool
     public var currentValueType: String
     
+    @Binding private var isScrolling: Bool
     @State private var touchLocation: CGFloat = -1.0
     @State private var showValue: Bool = false
     @State private var showLabelValue: Bool = false
@@ -35,7 +36,7 @@ public struct BarChartView : View {
     var isFullWidth:Bool {
         return self.formSize == ChartForm.large
     }
-    public init(data:ChartData, title: String, legend: String? = nil, style: ChartStyle = Styles.barChartStyleOrangeLight, form: CGSize? = ChartForm.medium, dropShadow: Bool? = true, cornerImage:Image? = Image(systemName: "waveform.path.ecg"), valueSpecifier: String? = "%.1f", keepTouchLocation: Bool = false, currentValueType: String? = nil){
+    public init(data:ChartData, title: String, legend: String? = nil, style: ChartStyle = Styles.barChartStyleOrangeLight, form: CGSize? = ChartForm.medium, dropShadow: Bool? = true, cornerImage:Image? = Image(systemName: "waveform.path.ecg"), valueSpecifier: String? = "%.1f", keepTouchLocation: Bool = false, currentValueType: String? = nil, isScrolling: Binding<Bool>){
         self.data = data
         self.title = title
         self.legend = legend
@@ -47,6 +48,7 @@ public struct BarChartView : View {
         self.valueSpecifier = valueSpecifier!
         self.keepTouchLocation = keepTouchLocation
         self.currentValueType = currentValueType!
+        self._isScrolling = isScrolling
     }
     
     public var body: some View {
@@ -106,6 +108,7 @@ public struct BarChartView : View {
                 maxHeight:self.formSize.height)
             .gesture(DragGesture()
                 .onChanged({ value in
+                    self.isScrolling = true
                     self.touchLocation = value.location.x/self.formSize.width
                     self.showValue = true
                     self.currentValue = self.getCurrentValue()?.1 ?? 0
@@ -114,6 +117,7 @@ public struct BarChartView : View {
                     }
                 })
                 .onEnded({ value in
+                    self.isScrolling = false
                     self.showValue = false
                     self.showLabelValue = false
                     if !keepTouchLocation {
@@ -152,7 +156,8 @@ struct ChartView_Previews : PreviewProvider {
         BarChartView(data: TestData.values ,
                      title: "Model 3 sales",
                      legend: "Quarterly",
-                     valueSpecifier: "%.0f")
+                     valueSpecifier: "%.0f",
+                     isScrolling: .constant(false))
     }
 }
 #endif
