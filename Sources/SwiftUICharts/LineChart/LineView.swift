@@ -57,7 +57,7 @@ public struct LineView: View {
                             .font(.callout)
                             .foregroundColor(self.colorScheme == .dark ? self.darkModeStyle.legendTextColor : self.style.legendTextColor)
                     }
-                }.offset(x: 0, y: 20)
+                }
                 ZStack{
                     GeometryReader{ reader in
                         Rectangle()
@@ -66,7 +66,11 @@ public struct LineView: View {
                             Legend(data: self.data,
                                    frame: .constant(reader.frame(in: .local)), hideHorizontalLines: self.$hideHorizontalLines)
                                 .transition(.opacity)
-                                .animation(Animation.easeOut(duration: 1).delay(1))
+                                .onAppear {
+                                    DispatchQueue.main.async {
+                                        withAnimation(Animation.easeOut(duration: 1.2).delay(1)) {}
+                                    }
+                                }
                         }
                         Line(data: self.data,
                              frame: .constant(CGRect(x: 0, y: 0, width: reader.frame(in: .local).width - 30, height: reader.frame(in: .local).height)),
@@ -79,17 +83,20 @@ public struct LineView: View {
                         )
                         .offset(x: 30, y: -20)
                         .onAppear(){
-                            self.showLegend = true
+                            DispatchQueue.main.async {
+                                self.showLegend = true
+                            }
                         }
                         .onDisappear(){
-                            self.showLegend = false
+                            DispatchQueue.main.async {
+                                self.showLegend = false
+                            }
                         }
                     }
                     .frame(width: geometry.frame(in: .local).size.width, height: 240)
-                    .offset(x: 0, y: 40 )
                     MagnifierRect(currentNumber: self.$currentDataNumber, currentXValue: self.$currentXValue, valueSpecifier: self.valueSpecifier)
                         .opacity(self.opacity)
-                        .offset(x: self.dragLocation.x - geometry.frame(in: .local).size.width/2, y: 36)
+                        .offset(x: self.dragLocation.x - geometry.frame(in: .local).size.width/2)
                 }
                 .frame(width: geometry.frame(in: .local).size.width, height: 240)
                 .gesture(DragGesture()
@@ -130,12 +137,7 @@ public struct LineView: View {
 
 struct LineView_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            LineView(data: [8,23,54,32,12,37,7,23,43], title: "Full chart", style: Styles.lineChartStyleOne)
-            
-            LineView(data: [282.502, 284.495, 283.51, 285.019, 285.197, 286.118, 288.737, 288.455, 289.391, 287.691, 285.878, 286.46, 286.252, 284.652, 284.129, 284.188], title: "Full chart", style: Styles.lineChartStyleOne)
-            
-        }
+        LineView(data: [8,23,54,32,12,37,7,23,43, 54], title: "Full chart", legend: "Test", style: Styles.lineChartStyleOne)
     }
 }
 
