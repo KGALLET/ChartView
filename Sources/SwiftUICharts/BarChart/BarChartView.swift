@@ -117,15 +117,22 @@ public struct BarChartView : View {
                     }
                 })
                 .onEnded({ value in
-                    self.isScrolling = false
-                    self.showValue = false
-                    self.showLabelValue = false
                     if !keepTouchLocation {
-                        self.touchLocation = -1
-                    }
+                       self.showValue = false
+                       self.showLabelValue = false
+                       self.touchLocation = -1
+                   } else {
+                       DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        withAnimation(Animation.easeOut(duration: 1.2)) {
+                           self.showValue = false
+                           self.showLabelValue = false
+                           self.touchLocation = -1
+                        }
+                       }
+                   }
                 })
         )
-            .gesture(TapGesture())
+        .gesture(TapGesture())
     }
     
     func getArrowOffset(touchLocation:CGFloat) -> Binding<CGFloat> {
